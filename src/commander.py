@@ -1,15 +1,14 @@
 import sys
 import paramiko as pm
 
-if len(sys.argv) < 5:
+if len(sys.argv) < 4:
 	print("missing arguments")
 	sys.exit(1)
 
-hosts = sys.argv[1]
-platform = sys.argv[2]
+commands = sys.argv[1]
+hosts = sys.argv[2]
 username = sys.argv[3]
 password = sys.argv[4]
-commands = sys.argv[5]
 
 port = 22
 
