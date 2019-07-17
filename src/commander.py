@@ -32,7 +32,7 @@ client = nm.Netmiko(**testhost)
 print()
 print(client.find_prompt())
 output = net_connect.send_config_set(testconfigs)
-
+print(output)
 
 #for file in [hostfile, commandfile]:
 #    try:
