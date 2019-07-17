@@ -27,11 +27,11 @@ testconfigs = [
     'delete snmp trap-group ace-nagios-snmp-traps targets 192.168.255.12'
 ]
 
-client = nm.Netmiko(**testhost, username=username, password=password)
+client = nm.ConnectHandler(**testhost, username=username, password=password)
 
 print()
 print(client.find_prompt())
-output = client.send_config_set(testconfigs, exit_config_mode=False)
+output = client.send_config_set(testconfigs), exit_config_mode=False)
 output += client.commit()
 print(output)
 
