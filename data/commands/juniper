@@ -1,0 +1,7 @@
+config
+set snmp trap-group ace-nagios-snmp-traps targets 192.168.255.3
+delete snmp trap-group ace-nagios-snmp-traps targets 192.168.255.12
+commit
+exit
+request snmp spoof-trap jnxEventTrap
+exit

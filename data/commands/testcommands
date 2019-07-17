@@ -1,2 +1,2 @@
-touch success
-touch something
+echo "is this thing on?"
+

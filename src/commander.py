@@ -14,6 +14,7 @@ port = 22
 
 hostfile = '../data/hosts/' + hosts
 commandfile = '../data/commands/' + commands
+logfile = '../data/log/commander.log'
 
 for file in [hostfile, commandfile]:
     try:
@@ -35,9 +36,13 @@ for host in hostlist:
         client.load_system_host_keys()
         client.set_missing_host_key_policy(pm.AutoAddPolicy())
         client.connect(host, port=port, username=username, password=password)
+        print('Connection succesful')
         for command in commandlist:
             try:
+                print('Executing:', command)
                 stdin, stdout, stderr = client.exec_command(command)
+                print('SSH:', stdout.read())
+                print('SSH:', stderr.read())
             except:
                print('Error: ', sys.exc_info()[0], sys.exc_info()[1])
                client.close()
