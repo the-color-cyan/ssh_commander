@@ -18,12 +18,12 @@ commandfile = '../data/commands/' + commands
 logfile = '../data/log/commander.log'
 
 testhost = {
-    "host": "192.168.250.255"
+    "host": "192.168.250.255",
     "device_type": "juniper"
 }
 
 testconfigs = [
-    'set snmp trap-group ace-nagios-snmp-traps targets 192.168.255.3', 
+    'set snmp trap-group ace-nagios-snmp-traps targets 192.168.255.3',
     'delete snmp trap-group ace-nagios-snmp-traps targets 192.168.255.12'
 ]
 
@@ -31,7 +31,8 @@ client = nm.Netmiko(**testhost, username=username, password=password)
 
 print()
 print(client.find_prompt())
-output = net_connect.send_config_set(testconfigs)
+output = client.send_config_set(testconfigs, exit_config_mode=False)
+output += client.commit()
 print(output)
 
 #for file in [hostfile, commandfile]:
