@@ -1,5 +1,6 @@
 import sys
 import paramiko as pm
+import netmiko
 
 if len(sys.argv) < 4:
     print("missing arguments")
