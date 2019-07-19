@@ -53,7 +53,7 @@ print(output)
 #        client.load_system_host_keys()
 #        client.set_missing_host_key_policy(pm.AutoAddPolicy())
 #        client.connect(host, port=port, username=username, password=password)
-#        print('Connection succesful')
+#        print('Connection successful')
 #        for command in commandlist:
 #            try:
 #                print('Executing:', command)
