@@ -28,7 +28,7 @@ testconfigs = [
 ]
 
 testcc = [
-    '>THIS IS A COMMAND'
+    '>THIS IS A COMMAND',
     'THIS IS A CONFIG'
 ]
 
@@ -41,10 +41,13 @@ def is_cmd(line):
 def strip_cmd(line):
     return line[1:]
 
-client = nm.ConnectHandler(**testhost, username=username, password=password)
-output = client.send_config_set(testconfigs, exit_config_mode=False)
-output += client.commit()
-print(output)
+def group_configs(commandfile):
+    
+
+#client = nm.ConnectHandler(**testhost, username=username, password=password)
+#output = client.send_config_set(testconfigs, exit_config_mode=False)
+#output += client.commit()
+#print(output)
 
 #for file in [hostfile, commandfile]:
 #    try:
