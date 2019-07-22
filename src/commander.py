@@ -27,6 +27,19 @@ testconfigs = [
     'delete snmp trap-group ace-nagios-snmp-traps targets 192.168.255.12'
 ]
 
+testcc = [
+    '>THIS IS A COMMAND'
+    'THIS IS A CONFIG'
+]
+
+def is_cmd(line):
+    if line[0] == '>':
+        return True
+    else:
+        return False
+
+def strip_cmd(line):
+    return line[1:]
 
 client = nm.ConnectHandler(**testhost, username=username, password=password)
 output = client.send_config_set(testconfigs, exit_config_mode=False)
