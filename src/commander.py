@@ -28,8 +28,11 @@ testconfigs = [
 ]
 
 testcc = [
-    '>THIS IS A COMMAND',
-    'THIS IS A CONFIG'
+    's1',
+    's2',
+    '>s3',
+    '>s4',
+    's5'
 ]
 
 def is_cmd(line):
@@ -41,8 +44,22 @@ def is_cmd(line):
 def strip_cmd(line):
     return line[1:]
 
-def group_configs(commandfile):
-    
+def group_configs(cmdlist):
+    is_last_cmd = is_cmd(cmdlist[0])
+    sub_list = []
+    new_list = []
+    for s in cmdlist:
+        if is_cmd(s) == is_last_cmd:
+            sub_list.append(s)
+        else:
+            new_list.append(sub_list)
+            sub_list = []
+            sub_list.append(s)
+        is_last_cmd = is_cmd(s)
+    new_list.append(sub_list)
+    return new_list
+
+print(group_configs(testcc))
 
 #client = nm.ConnectHandler(**testhost, username=username, password=password)
 #output = client.send_config_set(testconfigs, exit_config_mode=False)
