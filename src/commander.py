@@ -69,21 +69,28 @@ def load_file(file):
         print('Error: ', sys.exc_info()[0], sys.exc_info()[1])
         sys.exit(1)
 
-def juniper_send(inputfile, hostfile):
+def juniper_send(inputlist, client):
     log = []
-    grouped_inputs = group_input(inputfile)
-    for host in hostfile:
-        client = nm.Netmiko(**hostfile, username=username, password=password)
-        for group in grouped_inputs:
-            if is_cmd(line):
-                output = client.send_command_set(group)
-                log.append(output)
-            else:
-                output = client.send_config_set(group, exit_config_mode=False)
-                output += client.commit()
-                log.append(output)
+    for group in inputlist:
+        if is_cmd(line):
+            output = client.send_command_set(group)
+            log.append(output)
+        else:
+            output = client.send_config_set(group, exit_config_mode=False)
+            output += client.commit()
+            log.append(output)
     client.disconnect()
     return log
+
+if __name__ == '__main__':
+    hostlist = load_file(hostfile)
+    inputlist = group_input(load_file(inputfile))
+    for host in hostlist:
+        try:
+            client = nm.Netmiko(**host, username=username, password=password)
+        except:
+            print('Error: ', sys.exc_info()[0], sys.exc_info()[1])
+            client.disconnect()
 
 #print(group_configs(testin))
 
