@@ -14,7 +14,7 @@ password = sys.argv[4]
 port = 22
 
 hostfile = '../data/hosts/' + hosts + '.json'
-commandfile = '../data/commands/' + commands
+inputfile = '../data/commands/' + commands
 logfile = '../data/log/commander.log'
 
 testhost = {
@@ -27,7 +27,7 @@ testconfigs = [
     'delete snmp trap-group ace-nagios-snmp-traps targets 192.168.255.12'
 ]
 
-testcc = [
+testin = [
     's1',
     's2',
     '>s3',
@@ -44,11 +44,11 @@ def is_cmd(line):
 def strip_cmd(line):
     return line[1:]
 
-def group_configs(cmdlist):
-    is_last_cmd = is_cmd(cmdlist[0])
+def group_input(input_list):
+    is_last_cmd = is_cmd(input_list[0])
     sub_list = []
     new_list = []
-    for s in cmdlist:
+    for s in input_list:
         if is_cmd(s) == is_last_cmd:
             sub_list.append(s)
         else:
@@ -59,19 +59,40 @@ def group_configs(cmdlist):
     new_list.append(sub_list)
     return new_list
 
-print(group_configs(testcc))
+def load_file(file):
+    try:
+        with open(file, "r") as f:
+            return f.splitlines()
+    except IOError:
+        print(file + ' not found.')
+    except:
+        print('Error: ', sys.exc_info()[0], sys.exc_info()[1])
+        sys.exit(1)
 
-#client = nm.ConnectHandler(**testhost, username=username, password=password)
-#output = client.send_config_set(testconfigs, exit_config_mode=False)
-#output += client.commit()
-#print(output)
+def juniper_send(inputfile, hostfile):
+    log = []
+    grouped_inputs = group_input(inputfile)
+    for host in hostfile:
+        client = nm.Netmiko(**hostfile, username=username, password=password)
+        for group in grouped_inputs:
+            if is_cmd(line):
+                output = client.send_command_set(group)
+                log.append(output)
+            else:
+                output = client.send_config_set(group, exit_config_mode=False)
+                output += client.commit()
+                log.append(output)
+    client.disconnect()
+    return log
 
-#for file in [hostfile, commandfile]:
+#print(group_configs(testin))
+
+#for file in [hostfile, inputfile]:
 #    try:
 #        with open(file, 'r') as f:
 #            if file == hostfile:
 #                hostlist = f.read().splitlines()
-#            elif file == commandfile:
+#            elif file == inputfile:
 #                commandlist = f.read().splitlines()
 #    except IOError:
 #        print(file + ' not found.')
