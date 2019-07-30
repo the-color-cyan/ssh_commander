@@ -1,6 +1,7 @@
 import sys
 import paramiko as pm
 import netmiko as nm
+import json
 
 if len(sys.argv) < 4:
     print("missing arguments")
@@ -69,6 +70,10 @@ def load_file(file):
         print('Error: ', sys.exc_info()[0], sys.exc_info()[1])
         sys.exit(1)
 
+def json_load(file):
+    with open(file, "r") as f:
+        return json.load(f)
+
 def juniper_send(inputlist, client):
     log = []
     for group in inputlist:
@@ -83,9 +88,9 @@ def juniper_send(inputlist, client):
     return log
 
 if __name__ == '__main__':
-    hostlist = load_file(hostfile)
+    hostdict = json_load(hostfile)
     inputlist = group_input(load_file(inputfile))
-    for host in hostlist:
+    for host in hostdict:
         try:
             client = nm.Netmiko(**host, username=username, password=password)
             try:
