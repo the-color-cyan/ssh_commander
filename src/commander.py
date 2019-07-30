@@ -95,7 +95,9 @@ if __name__ == '__main__':
             client = nm.Netmiko(**host, username=username, password=password)
             try:
                 juniper_send(inputlist, client)
-                client.disconnect()
+            except:
+                print('Error: ', sys.exc_info()[0], sys.exc_info()[1])
+            client.disconnect()
         except:
             print('Error: ', sys.exc_info()[0], sys.exc_info()[1])
             client.disconnect()
