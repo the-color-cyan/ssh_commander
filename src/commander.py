@@ -72,7 +72,7 @@ def load_file(file):
 def juniper_send(inputlist, client):
     log = []
     for group in inputlist:
-        if is_cmd(line):
+        if is_cmd(group[0]):
             output = client.send_command_set(group)
             log.append(output)
         else:
@@ -88,6 +88,9 @@ if __name__ == '__main__':
     for host in hostlist:
         try:
             client = nm.Netmiko(**host, username=username, password=password)
+            try:
+                juniper_send(inputlist, client)
+                client.disconnect()
         except:
             print('Error: ', sys.exc_info()[0], sys.exc_info()[1])
             client.disconnect()
