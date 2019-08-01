@@ -1,7 +1,6 @@
 import sys
 import paramiko as pm
 import netmiko as nm
-import json
 
 if len(sys.argv) < 4:
     print("missing arguments")
@@ -15,7 +14,7 @@ password = sys.argv[4]
 port = 22
 
 hostfile = '../data/hosts/' + hosts + '.json'
-inputfile = '../data/commands/' + commands
+commandfile = '../data/commands/' + commands
 logfile = '../data/log/commander.log'
 
 testhost = {
@@ -28,7 +27,7 @@ testconfigs = [
     'delete snmp trap-group ace-nagios-snmp-traps targets 192.168.255.12'
 ]
 
-testin = [
+testcc = [
     's1',
     's2',
     '>s3',
@@ -45,11 +44,11 @@ def is_cmd(line):
 def strip_cmd(line):
     return line[1:]
 
-def group_input(input_list):
-    is_last_cmd = is_cmd(input_list[0])
+def group_configs(cmdlist):
+    is_last_cmd = is_cmd(cmdlist[0])
     sub_list = []
     new_list = []
-    for s in input_list:
+    for s in cmdlist:
         if is_cmd(s) == is_last_cmd:
             sub_list.append(s)
         else:
@@ -60,61 +59,22 @@ def group_input(input_list):
     new_list.append(sub_list)
     return new_list
 
-def load_file(file):
-    try:
-        with open(file, "r") as f:
-            return list(f)
-    except IOError:
-        print(file + ' not found.')
-    except:
-        print('Error: ', sys.exc_info()[0], sys.exc_info()[1])
-        sys.exit(1)
+def send_commands(cmdlist):
+    
 
-def json_load(file):
-    with open(file, "r") as f:
-        return json.load(f)
+#print(group_configs(testcc))
 
-def juniper_send(inputlist, client):
-    log = []
-    for group in inputlist:
-        if is_cmd(group[0]):
-            for command in group:
-                output = client.send_command(strip_cmd(command))
-                print(output)
-                log.append(output)
-        else:
-            output = client.send_config_set(group, exit_config_mode=False)
-            output += client.commit()
-            print(output)
-            log.append(output)
-    client.disconnect()
-    return log
+#client = nm.ConnectHandler(**testhost, username=username, password=password)
+#output = client.send_config_set(testconfigs, exit_config_mode=False)
+#output += client.commit()
+#print(output)
 
-if __name__ == '__main__':
-    hostlist = json_load(hostfile)
-    inputlist = group_input(load_file(inputfile))
-    print(hostlist)
-    print(inputlist)
-    for host in hostlist:
-        try:
-            client = nm.Netmiko(**host, username=username, password=password)
-            try:
-                juniper_send(inputlist, client)
-            except:
-                print('Error: ', sys.exc_info()[0], sys.exc_info()[1])
-            client.disconnect()
-        except:
-            print('Error: ', sys.exc_info()[0], sys.exc_info()[1])
-            client.disconnect()
-
-#print(group_configs(testin))
-
-#for file in [hostfile, inputfile]:
+#for file in [hostfile, commandfile]:
 #    try:
 #        with open(file, 'r') as f:
 #            if file == hostfile:
 #                hostlist = f.read().splitlines()
-#            elif file == inputfile:
+#            elif file == commandfile:
 #                commandlist = f.read().splitlines()
 #    except IOError:
 #        print(file + ' not found.')
